@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Gemini Chat – Local AI PDF Chat App (Tkinter)
 
 This project is a **local desktop app** built using Python and Tkinter that lets you chat with **Gemini AI (2.5 Pro or Flash)**. You can send text prompts, upload PDFs for instant summarization, and even customize your system prompt. It runs completely on your local machine with Gemini API.
@@ -92,3 +93,6 @@ Built with ❤️ using Python, Tkinter, and the Google Gemini API.
 ---
 
 > 🧠 If you like the project, give it a ⭐ on GitHub!
+=======
+# Gemini-API
+>>>>>>> e298bf40e372629b5d7a05b2a1640ef5fc6f1369
