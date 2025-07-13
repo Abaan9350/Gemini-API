@@ -5,24 +5,22 @@ import google.generativeai as genai
 import re
 import time
 
-# --- SET YOUR GEMINI API KEY HERE ---
-API_KEY = "YOUR_API_KEY_HERE"  # Replace this with your actual Gemini API key
+# --- Default Config ---
+API_KEY = "AIzaSyACx1g9kuhtuJvJKuCJpw1lej3zaPEAWEY"
 genai.configure(api_key=API_KEY)
+MODEL_NAME = "gemini-2.5-pro"
+model = genai.GenerativeModel(MODEL_NAME)
 
-# --- Default Gemini Model ---
-default_model = "gemini-2.5-pro"
-model = genai.GenerativeModel(default_model)
+dark_mode = True
 
-dark_mode = True  # Start with dark theme enabled
-
-# --- Utility: Clean up markdown formatting from Gemini's response ---
+# --- Clean markdown formatting ---
 def clean_text(text):
     text = re.sub(r'\*\*(.*?)\*\*', r'\1', text)
     text = re.sub(r'\*(.*?)\*', r'\1', text)
     text = re.sub(r'`(.*?)`', r'\1', text)
     return text
 
-# --- Typing animation to make it feel natural ---
+# --- Typing animation ---
 def type_text(tag, text):
     chat_display.insert(tk.END, "\n", tag)
     for char in text:
@@ -31,7 +29,7 @@ def type_text(tag, text):
         chat_display.update()
         time.sleep(0.005)
 
-# --- Talk to Gemini and display response ---
+# --- Handle response ---
 def fetch_response(prompt):
     try:
         chat_display.insert(tk.END, "\nGemini is thinking...\n", 'thinking')
@@ -48,7 +46,7 @@ def fetch_response(prompt):
 
     type_text('gemini', f"Gemini: {reply}\n")
 
-# --- Send user input to Gemini ---
+# --- Send Message ---
 def send_message():
     user_input = user_entry.get()
     if not user_input.strip():
@@ -58,7 +56,7 @@ def send_message():
     chat_display.see(tk.END)
     threading.Thread(target=fetch_response, args=(user_input,), daemon=True).start()
 
-# --- Upload and summarize PDF using Gemini ---
+# --- Upload PDF ---
 def upload_pdf():
     file_path = filedialog.askopenfilename(filetypes=[("PDF Files", "*.pdf")])
     if not file_path:
@@ -74,11 +72,11 @@ def upload_pdf():
         reply = f"[Error reading PDF] {str(e)}"
     type_text('gemini', f"Gemini: {reply}\n")
 
-# --- Clear the entire chat window ---
+# --- Clear Chat ---
 def clear_chat():
     chat_display.delete(1.0, tk.END)
 
-# --- Save the full chat to a local text file ---
+# --- Save Chat to File ---
 def save_chat():
     file_path = filedialog.asksaveasfilename(defaultextension=".txt",
                                              filetypes=[("Text Files", "*.txt")])
@@ -87,7 +85,7 @@ def save_chat():
             f.write(chat_display.get(1.0, tk.END))
         messagebox.showinfo("Saved", f"Chat saved to {file_path}")
 
-# --- Toggle between light and dark mode ---
+# --- Theme toggle ---
 def toggle_theme():
     global dark_mode
     dark_mode = not dark_mode
@@ -101,7 +99,7 @@ def toggle_theme():
     user_entry.configure(bg=entry_bg, fg=fg_color)
     system_prompt.configure(bg=entry_bg, fg=fg_color)
 
-# --- Build UI ---
+# --- UI Setup ---
 root = tk.Tk()
 root.title("Gemini Chat - Pro AI Tool")
 root.geometry("960x680")
@@ -130,7 +128,7 @@ upload_button = tk.Button(input_frame, text="📎 PDF", command=upload_pdf,
     font=("Consolas", 12), bg="#393939", fg="white", padx=10, pady=6)
 upload_button.pack(side=tk.RIGHT, padx=(0, 10))
 
-# --- Lower control buttons ---
+# --- Extra Controls ---
 control_frame = tk.Frame(root, bg="#1e1e1e")
 control_frame.pack(fill=tk.X, padx=12, pady=(0, 10))
 
@@ -146,16 +144,14 @@ theme_btn = tk.Button(control_frame, text="🌗 Toggle Theme", command=toggle_th
     font=("Consolas", 11), bg="#5e5e5e", fg="white")
 theme_btn.pack(side=tk.LEFT, padx=4)
 
-# --- Model selection ---
-model_var = tk.StringVar(value=default_model)
+model_var = tk.StringVar(value="gemini-2.5-pro")
 model_dropdown = ttk.Combobox(control_frame, textvariable=model_var, state="readonly",
     values=["gemini-2.5-pro", "gemini-2.5-flash"], font=("Consolas", 11), width=20)
 model_dropdown.pack(side=tk.RIGHT, padx=4)
 
-# --- Optional system prompt ---
+# --- System Prompt Input ---
 system_prompt = tk.Entry(control_frame, font=("Consolas", 11), width=40)
 system_prompt.insert(0, "Answer concisely. Keep it simple.")
 system_prompt.pack(side=tk.RIGHT, padx=4)
 
-# --- Start app ---
 root.mainloop()
