@@ -99,6 +99,23 @@ def toggle_theme():
     user_entry.configure(bg=entry_bg, fg=fg_color)
     system_prompt.configure(bg=entry_bg, fg=fg_color)
 
+def delete_previous_word(event):
+    entry = event.widget
+    cursor_pos = entry.index(tk.INSERT)
+    text_before_cursor = entry.get()[:cursor_pos]
+
+    # Find the position of the previous word
+    if text_before_cursor.strip() == "":
+        return "break"
+
+    # Find last space before cursor
+    words = re.split(r'(\s+)', text_before_cursor)
+    if words:
+        delete_len = len(words[-1]) if words[-1].strip() else len(words[-2] + words[-1])
+        entry.delete(cursor_pos - delete_len, cursor_pos)
+    return "break"
+
+
 # --- UI Setup ---
 root = tk.Tk()
 root.title("Gemini Chat - Pro AI Tool")
@@ -119,6 +136,8 @@ user_entry = tk.Entry(input_frame, font=("Consolas", 13), bg="#2d2d2d", fg="whit
     insertbackground="white", borderwidth=0, relief=tk.FLAT)
 user_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 10), ipady=6)
 user_entry.bind("<Return>", lambda event: send_message())
+user_entry.bind("<Control-BackSpace>", delete_previous_word)
+
 
 send_button = tk.Button(input_frame, text="Send", command=send_message,
     font=("Consolas", 12), bg="#007ACC", fg="white", padx=12, pady=6)
