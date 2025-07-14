@@ -6,7 +6,7 @@ import re
 import time
 
 # --- Default Config ---
-API_KEY = "AIzaSyACx1g9kuhtuJvJKuCJpw1lej3zaPEAWEY"
+API_KEY = "Your_API_Key_Here"
 genai.configure(api_key=API_KEY)
 MODEL_NAME = "gemini-2.5-pro"
 model = genai.GenerativeModel(MODEL_NAME)
